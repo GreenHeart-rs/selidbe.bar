@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#141416">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Selidbe Bar">
+<title>Selidbe Bar | Aplikacija</title>
+<link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+<link rel="apple-touch-icon" href="/assets/ikona-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="/assets/style.css?v=c596912c">
+<style>
+html, body { overflow-x: hidden; overflow-x: clip; }
+.tab-btn.active { background: rgba(152,250,65,.14); color: #fff; box-shadow: inset 0 0 0 1px rgba(152,250,65,.5); }
+.st-0 { background: rgba(152,250,65,.12); color: #c4fb93; border-color: rgba(152,250,65,.4); }
+.st-1 { background: rgba(251,191,36,.12); color: #fcd34d; border-color: rgba(251,191,36,.4); }
+.st-2 { background: rgba(196,251,147,.12); color: #d9fdb8; border-color: rgba(196,251,147,.4); }
+.lead-row.unread { border-color: rgba(152,250,65,.55); }
+.lead-row.flash { animation: leadFlash 1.6s ease-out 2; }
+@keyframes leadFlash { 0% { box-shadow: 0 0 0 0 rgba(152,250,65,.8); } 100% { box-shadow: 0 0 0 14px rgba(152,250,65,0); } }
+.num { width: 100%; background: rgba(12,12,14,.65); border: 1px solid rgba(255,255,255,.1); border-radius: .7rem; color: #e2e8f0; padding: .55rem .7rem; font-variant-numeric: tabular-nums; }
+.num:focus { outline: none; border-color: #98fa41; }
+.num.changed { border-color: #fbbf24; }
+.stage { min-height: 100vh; }
+.phone { position: relative; min-height: 100vh; background: #141416; }
+@media (min-width: 900px) {
+  .stage { display: flex; align-items: center; justify-content: center; gap: 4rem; padding: 2rem; }
+  .phone { width: 400px; height: min(840px, calc(100vh - 4rem)); min-height: 0; border-radius: 52px; border: 12px solid #0a0a0b; box-shadow: 0 0 0 2px #1e293b, 0 40px 120px -30px rgba(152,250,65,.45); overflow-y: auto; overflow-x: hidden; }
+  .phone::-webkit-scrollbar { width: 0; }
+  .notch { position: sticky; top: 0; z-index: 50; height: 0; }
+  .notch::before { content: ''; position: absolute; left: 50%; top: 8px; transform: translateX(-50%); width: 110px; height: 26px; border-radius: 20px; background: #0a0a0b; }
+  .side { display: block !important; }
+  .phone > header { padding-top: 2.25rem; }
+}
+</style>
+</head>
+<body class="font-sans bg-brand-950 text-slate-200 antialiased">
+<div class="stage">
+    <aside class="side hidden max-w-sm">
+    <a href="/" class="inline-flex items-center gap-2 text-sm font-bold text-acc hover:underline">← Nazad na sajt</a>
+    <div class="mt-6 text-xs font-extrabold tracking-[.25em] uppercase text-acc">Aplikacija vlasnika · Demo</div>
+    <h1 class="mt-2 font-display text-4xl font-bold text-white leading-tight">Marko, ovako bi vam stizali zahtjevi.</h1>
+    <p class="mt-4 text-slate-400 leading-relaxed">Ovo je aplikacija koju biste imali u telefonu. Kad klijent pošalje zahtjev na sajtu, on se ovdje pojavi istog trenutka – sa kompletnim inventarom, spratovima, kilometražom i cijenom koju je klijent vidio.</p>
+    <ul class="mt-5 space-y-2.5 text-sm text-slate-300">
+      <li class="flex gap-2"><span class="text-price">✓</span>Jednim dodirom pozovite klijenta ili mu pišite na WhatsApp</li>
+      <li class="flex gap-2"><span class="text-price">✓</span>Označite zahtjev kao Dogovoreno ili Završeno</li>
+      <li class="flex gap-2"><span class="text-price">✓</span>Promijenite cijene – sajt se odmah ažurira</li>
+      <li class="flex gap-2"><span class="text-price">✓</span>Dodaje se na početni ekran kao prava aplikacija</li>
+    </ul>
+    <p class="mt-6 text-xs text-slate-500">Savjet: ostavite ovu karticu otvorenu, pošaljite zahtjev sa sajta u drugoj kartici i gledajte kako stiže, uz zvuk.</p>
+  </aside>
+  <div class="phone" id="phone">
+    <div class="notch"></div>
+    <header class="sticky top-0 z-30 border-b border-white/[0.06] bg-brand-900/90 backdrop-blur-xl pt-2">
+      <div class="px-4 pt-3 pb-3">
+        <div class="flex items-center gap-2">
+          <img src="/assets/bar/logo.png" alt="Selidbe Bar" class="h-9 w-auto shrink-0"><div class="mr-auto leading-none pl-1"><div class="text-[11px] text-slate-400">Zdravo,</div><div class="font-display font-bold text-white">Marko 👋</div></div>
+          <span class="text-[10px] font-extrabold px-2 py-1 rounded-md bg-amber-400/15 text-amber-300 border border-amber-400/30">DEMO</span>
+          <button id="notifyBtn" class="btn-ghost w-9 h-9 rounded-lg text-sm" title="Zvuk i obavještenja" aria-label="Zvuk i obavještenja">🔔</button>
+        </div>
+        <nav class="mt-3 flex gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+          <button class="tab-btn active flex-1 px-3 py-2 rounded-lg text-sm font-bold text-slate-400" data-tab="leads">Zahtjevi <span id="newBadge" class="ml-1 px-1.5 rounded-md bg-acc text-brand-900 text-[11px]" hidden>0</span></button>
+          <button class="tab-btn flex-1 px-3 py-2 rounded-lg text-sm font-bold text-slate-400" data-tab="prices">Cijene</button>
+        </nav>
+      </div>
+    </header>
+        <main id="tab-leads" class="px-4 py-5">
+      <div id="listView">
+        <div class="grid grid-cols-3 gap-2" id="stats"></div>
+        <div id="filters" class="mt-4 flex flex-wrap gap-1.5"></div>
+        <input id="search" type="search" class="field !py-2 !text-sm w-full mt-3" placeholder="Pretraga: ime, telefon ili adresa">
+        <div id="leadList" class="mt-4 space-y-2"></div>
+        <div class="mt-6 flex items-center justify-between gap-2">
+          <a href="/" class="text-xs font-bold text-acc hover:underline md:hidden">← Sajt</a>
+          <button id="resetDemo" class="ml-auto text-xs font-bold text-slate-500 hover:text-slate-300 underline">Resetuj demo</button>
+        </div>
+      </div>
+      <div id="detailView" hidden></div>
+    </main>
+        <main id="tab-prices" class="px-4 py-5" hidden>
+      <h2 class="font-display text-2xl font-bold text-white">Vaše cijene</h2>
+      <p class="text-sm text-slate-400 mt-1">U eurima. Izmjene važe na sajtu čim ih sačuvate.</p>
+      <div id="priceForm" class="mt-5 space-y-4"></div>
+      <div class="sticky bottom-0 -mx-4 mt-5 px-4 py-3 bg-brand-900/95 backdrop-blur border-t border-white/[0.06] flex gap-2">
+        <button id="resetPrices" class="btn-ghost flex-1 py-3 rounded-xl text-sm font-bold">Početne</button>
+        <button id="savePrices" class="btn-primary flex-[2] py-3 rounded-xl text-sm">Sačuvaj cijene</button>
+      </div>
+    </main>
+    <div id="toast" class="sticky bottom-4 z-[80] mx-4 opacity-0 pointer-events-none transition">
+      <div class="px-4 py-3 rounded-xl bg-brand-800/95 border border-acc/40 text-sm text-slate-100 shadow-xl"><span id="toastText"></span></div>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+'use strict';
+const KEYS = { leads: 'sb.demo.leads', rules: 'sb.demo.rules', seeded: 'sb.demo.seeded', seen: 'sb.demo.seen' };
+const STATUSES = ['Novo', 'Dogovoreno', 'Završeno'];
+const stc = s => 'st-' + Math.max(0, STATUSES.indexOf(s));
+const DEFAULT_RULES = {
+  kombi_start: 25, kamion_start: 45,
+  kombi_km: 0.8, kamion_km: 1.4,
+  kombi_m3: 14, kamion_m3: 14,
+  cena_m3: 6,
+  min_selidba: 80, min_kombi: 35,
+  sprat_bez_lifta: [0, 10, 20, 30, 40, 50, 60],
+  sprat_sa_liftom: [0, 0, 10, 15, 15, 20, 20],
+  kutija_rad: 3, kutija_troslojna: 2, kutija_petoslojna: 2.5, kutija_garderober: 12,
+  zastita: 5,
+  teski: { pianino: [100, 25], tapec: [50, 15], sef: [100, 25] },
+  montaza: {
+    orman1: [15, 10], orman2: [20, 15], orman3: [30, 20],
+    klizni: [50, 35], stakleni: [60, 45],
+    sto: [20, 12], krevet: [20, 12], ugaona: [25, 15],
+    luster: [12, 12], krevetac: [15, 10]
+  },
+  zaokruzi: 5
+};
+const GROUPS = [
+  { t: 'Kombi', f: [
+    ['kombi_start', 'Kombi – izlazak vozila', '€'], ['kamion_start', 'Više tura – polazak', '€'],
+    ['kombi_km', 'Kombi – po kilometru', '€/km'], ['kamion_km', 'Više tura – po kilometru', '€/km'],
+    ['kombi_m3', 'Kapacitet kombija', 'm³'], ['kamion_m3', 'Tovar po turi (više tura)', 'm³']] },
+  { t: 'Osnovno', f: [
+    ['cena_m3', 'Cijena po kubiku', '€/m³'], ['min_selidba', 'Minimum – selidba sa ekipom', '€'],
+    ['min_kombi', 'Minimum – samo kombi', '€'], ['zaokruzi', 'Zaokruživanje na', '€'],
+    ['zastita', 'Zaštita po komadu (TV, ogledalo…)', '€']] },
+  { t: 'Pakovanje (mi pakujemo)', f: [
+    ['kutija_rad', 'Rad po kutiji', '€'], ['kutija_troslojna', 'Troslojna kutija', '€'],
+    ['kutija_petoslojna', 'Petoslojna / velika kutija', '€'], ['kutija_garderober', 'Garderober kutija', '€']] }
+];
+const FLOOR_NAMES = ['P', '1.', '2.', '3.', '4.', '5.', '6.+'];
+const HEAVY_NAMES = { pianino: 'Pianino / klavir', tapec: 'TA peć', sef: 'Sef / vending aparat' };
+const MD_NAMES = {
+  orman1: 'Orman jednokrilni', orman2: 'Orman dvokrilni', orman3: 'Orman trokrilni', klizni: 'Orman – klizna vrata',
+  stakleni: 'Orman – staklena vrata', sto: 'Radni sto', krevet: 'Bračni krevet', ugaona: 'Ugaona garnitura', luster: 'Luster', krevetac: 'Dječji krevetac'
+};
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nf = new Intl.NumberFormat('sr-Latn-ME', { maximumFractionDigits: 1 });
+const money = n => n == null || n === '' ? '—' : new Intl.NumberFormat('sr-Latn-ME', { maximumFractionDigits: 0 }).format(n) + ' €';
+const clone = o => JSON.parse(JSON.stringify(o));
+const fmtDate = s => s ? new Date(s).toLocaleString('sr-Latn-ME', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+const read = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
+const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
+let leads = [], filter = 'all', selected = null, rules = clone(DEFAULT_RULES);
+const seen = new Set(read(KEYS.seen, []));
+let toastT;
+function toast(msg) {
+  $('#toastText').textContent = msg;
+  $('#toast').style.opacity = 1;
+  clearTimeout(toastT); toastT = setTimeout(() => { $('#toast').style.opacity = 0; }, 3000);
+}
+function seed() {
+  if (read(KEYS.seeded, false)) return;
+  const ago = h => new Date(Date.now() - h * 3600e3).toISOString();
+  const sample = [
+    { id: 'S1', name: 'Ana Petrović (primjer)', phone: '067 214 588', from: 'Ulica Jovana Tomaševića 12, Bar', to: 'Šušanj bb, Bar', sqm: 58, km: 6, m3: 15.4, total: 215, status: 'Novo', created_at: ago(2),
+      details: { service: 'Selidba sa ekipom', home: 'Stan · Dvosoban', truck: 'Kombi – više tura', trips: 2, packing: 'Pakuju sami',
+        pickup: { floor: '2. sprat bez lifta' }, dropoff: { floor: 'prizemlje' },
+        inventory: [{ name: 'Trosed', qty: 1, m3: 1.5 }, { name: 'Fotelja', qty: 1, m3: 0.6 }, { name: 'Bračni krevet', qty: 1, m3: 2.2, disassembly: true, assembly: true }, { name: 'Orman dvokrilni', qty: 1, m3: 1.8 }, { name: 'Komoda za odjeću', qty: 1, m3: 0.9 }, { name: 'Polica za knjige', qty: 1, m3: 1.2 }, { name: 'TV', qty: 1, m3: 0.3 }, { name: 'Frižider / zamrzivač', qty: 1, m3: 1.5 }, { name: 'Veš / sudo mašina', qty: 1, m3: 0.6 }, { name: 'Trpezarijski sto', qty: 1, m3: 1 }, { name: 'Trpezarijska stolica', qty: 4, m3: 0.8 }, { name: 'Standardna kutija', qty: 30, m3: 3 }],
+        breakdown: [{ item: 'Vozilo – Kombi – više tura', info: 'izlazak vozila i ekipe', amount: 45 }, { item: 'Transport', info: '6 km × 1,40 €', amount: 8 }, { item: 'Zapremina stvari', info: '15,4 m³ × 6 €', amount: 92 }, { item: 'Bračni krevet – demontaža i montaža', info: '1 × 32 €', amount: 32 }, { item: 'Spratovi (+20%)', info: 'utovar: 2. sprat bez lifta · istovar: prizemlje', amount: 38 }] } },
+    { id: 'S2', name: 'Marko Vujović (primjer)', phone: '069 538 120', from: 'Makedonska 20, Bar', to: 'Jadranski put 21, Budva', sqm: 75, km: 38, m3: 22.2, total: 430, status: 'Dogovoreno', created_at: ago(26),
+      details: { service: 'Selidba sa ekipom', home: 'Kuća · Trosoban', truck: 'Kombi – više tura', trips: 2, packing: 'Mi pakujemo (troslojne kutije)',
+        pickup: { floor: 'prizemlje' }, dropoff: { floor: 'prizemlje' },
+        inventory: [{ name: 'Ugaona garnitura', qty: 1, m3: 2.5 }, { name: 'Bračni krevet', qty: 2, m3: 4.4 }, { name: 'Orman trokrilni', qty: 1, m3: 2.5 }, { name: 'Komoda za odjeću', qty: 2, m3: 1.8 }, { name: 'Polica za knjige', qty: 2, m3: 2.4 }, { name: 'Frižider / zamrzivač', qty: 1, m3: 1.5 }, { name: 'Veš / sudo mašina', qty: 1, m3: 0.6 }, { name: 'Trpezarijski sto', qty: 1, m3: 1 }, { name: 'Dušek', qty: 1, m3: 0.8 }, { name: 'Bicikl', qty: 1, m3: 0.7 }, { name: 'Standardna kutija', qty: 40, m3: 4 }],
+        breakdown: [{ item: 'Vozilo – Kombi – više tura', info: 'izlazak vozila i ekipe', amount: 45 }, { item: 'Transport', info: '38 km × 1,40 €', amount: 53 }, { item: 'Zapremina stvari', info: '22,2 m³ × 6 €', amount: 133 }, { item: 'Pakovanje – 40 × standardne kutije', info: 'rad 3 € + materijal 2 € po kutiji', amount: 200 }] } },
+    { id: 'S3', name: 'Ivana Đukić (primjer)', phone: '068 771 905', from: 'Sutomore, Obala 4', to: 'Ulica Vladimira Rolovića 8, Bar', sqm: 28, km: 9, m3: 4.6, total: 80, status: 'Završeno', created_at: ago(74),
+      details: { service: 'Selidba sa ekipom', home: 'Stan · Garsonjera', truck: 'Kombi', trips: 1, packing: 'Pakuju sami', pickup: { floor: 'prizemlje' }, dropoff: { floor: '1. sprat, lift' },
+        inventory: [{ name: 'Singl krevet', qty: 1, m3: 1.2 }, { name: 'Radni / kompjuterski sto', qty: 1, m3: 1 }, { name: 'Kofer', qty: 2, m3: 0.3 }, { name: 'Stona lampa', qty: 1, m3: 0.1 }, { name: 'Standardna kutija', qty: 20, m3: 2 }],
+        breakdown: [{ item: 'Vozilo – Kombi', info: 'izlazak vozila i ekipe', amount: 25 }, { item: 'Transport', info: '9 km × 0,80 €', amount: 7 }, { item: 'Zapremina stvari', info: '4,6 m³ × 6 €', amount: 28 }, { item: 'Dopuna do minimalne cijene', info: 'minimum 80 €', amount: 20 }] } }
+  ];
+  write(KEYS.leads, sample.concat(read(KEYS.leads, [])));
+  write(KEYS.seeded, true);
+  sample.forEach(l => seen.add(l.id));
+  write(KEYS.seen, [...seen]);
+}
+function load() { leads = read(KEYS.leads, []); }
+function persist() { write(KEYS.leads, leads); }
+const isNew = l => l.status === STATUSES[0] && !seen.has(l.id);
+function renderStats() {
+  const c = s => leads.filter(l => l.status === s).length;
+  const booked = leads.filter(l => l.status !== STATUSES[0]).reduce((a, l) => a + (Number(l.total) || 0), 0);
+  $('#stats').innerHTML = [
+    ['Novi', c(STATUSES[0]), 'text-acc'], ['Dogovoreni', c(STATUSES[1]), 'text-amber-300'], ['Ukupno', money(booked), 'text-price']
+  ].map(([t, v, cls]) => `<div class="glass !rounded-2xl p-3"><div class="text-[10px] uppercase tracking-widest text-slate-500">${t}</div><div class="font-display text-xl font-bold ${cls} tabular mt-0.5 truncate">${v}</div></div>`).join('');
+  const n = leads.filter(isNew).length;
+  $('#newBadge').hidden = !n; $('#newBadge').textContent = n;
+  document.title = (n ? `(${n}) ` : '') + 'Selidbe Bar | Aplikacija';
+}
+function renderFilters() {
+  const opts = [['all', 'Svi'], [STATUSES[0], 'Novi'], [STATUSES[1], 'Dogovoreni'], [STATUSES[2], 'Završeni']];
+  $('#filters').innerHTML = opts.map(([v, t]) => `<button class="tab-btn ${filter === v ? 'active' : ''} px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 border border-white/[0.06]" data-f="${v}">${t} <span class="opacity-70">${v === 'all' ? leads.length : leads.filter(l => l.status === v).length}</span></button>`).join('');
+}
+function renderList(flashId) {
+  const q = $('#search').value.trim().toLowerCase();
+  const rows = leads.filter(l => (filter === 'all' || l.status === filter) && (!q || [l.name, l.phone, l.from, l.to].join(' ').toLowerCase().includes(q)));
+  $('#leadList').innerHTML = rows.length ? rows.map(l => `
+    <button class="lead-row glass !rounded-2xl w-full min-w-0 overflow-hidden text-left p-4 ${isNew(l) ? 'unread' : ''} ${flashId === l.id ? 'flash' : ''}" data-id="${esc(l.id)}">
+      <div class="flex items-center gap-2">
+        ${isNew(l) ? '<span class="w-2 h-2 rounded-full bg-acc shrink-0"></span>' : ''}
+        <span class="font-bold text-white truncate min-w-0">${esc(l.name || 'Bez imena')}</span>
+        <span class="ml-auto shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-md border ${stc(l.status)}">${esc(l.status)}</span>
+      </div>
+      <div class="mt-1.5 text-xs text-slate-400 truncate">${esc(l.from || '—')} → ${esc(l.to || '—')}</div>
+      <div class="mt-1.5 flex justify-between gap-2 text-xs"><span class="text-slate-500">${fmtDate(l.created_at)} · ${nf.format(l.km || 0)} km · ${nf.format(l.m3 || 0)} m³</span><span class="font-bold text-price tabular shrink-0">${money(l.total)}</span></div>
+    </button>`).join('') : '<div class="text-sm text-slate-500 p-4 text-center">Još nema zahtjeva. Pošaljite jedan sa sajta!</div>';
+}
+function refresh(flashId) { renderStats(); renderFilters(); renderList(flashId); }
+function openDetail(id) {
+  const l = leads.find(x => x.id === id); if (!l) return;
+  selected = id; seen.add(id); write(KEYS.seen, [...seen]);
+  const d = l.details || {};
+  const tel = String(l.phone || '').replace(/[^\d+]/g, '');
+  const intl = tel.startsWith('+') ? tel : tel.startsWith('00') ? '+' + tel.slice(2) : tel.startsWith('0') ? '+382' + tel.slice(1) : '+382' + tel;
+  const maps = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(l.from || '') + '&destination=' + encodeURIComponent(l.to || '');
+  const inv = (d.inventory || []).map(i => `<tr class="border-t border-white/[0.05]"><td class="py-1.5 pr-2">${esc(i.name)}${i.disassembly ? ' <span class="text-acc text-[10px] font-bold">DEM</span>' : ''}${i.assembly ? ' <span class="text-acc text-[10px] font-bold">MON</span>' : ''}</td><td class="py-1.5 text-right tabular">×${esc(i.qty)}</td><td class="py-1.5 text-right tabular text-slate-500 pl-2">${nf.format(i.m3 || 0)} m³</td></tr>`).join('');
+  const calc = (d.breakdown || []).map(o => `<div class="flex justify-between gap-3 py-1.5"><div class="min-w-0"><div class="text-slate-200">${esc(o.item)}</div>${o.info ? `<div class="text-[11px] text-slate-500">${esc(o.info)}</div>` : ''}</div><div class="font-bold text-price tabular shrink-0">${money(o.amount)}</div></div>`).join('');
+  $('#listView').hidden = true;
+  const v = $('#detailView'); v.hidden = false;
+  v.innerHTML = `
+    <button type="button" id="backBtn" class="btn-ghost px-4 py-2 rounded-xl text-sm font-bold">← Zahtjevi</button>
+    <div class="mt-4 flex items-start gap-3">
+      <div class="min-w-0 mr-auto"><div class="text-2xl font-display font-bold text-white break-words">${esc(l.name || 'Bez imena')}</div><div class="text-xs text-slate-500 mt-1">${fmtDate(l.created_at)}</div></div>
+      <select id="stSel" class="field !w-auto !py-2 !text-sm">${STATUSES.map(s => `<option ${l.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select>
+    </div>
+    <div class="mt-4 grid grid-cols-3 gap-2">
+      <a href="tel:${esc(tel)}" class="btn-primary py-3 rounded-xl text-sm text-center">📞 Pozovi</a>
+      <a href="https://wa.me/${intl.replace('+', '')}" target="_blank" rel="noopener" class="btn-ghost py-3 rounded-xl text-sm font-bold text-center">💬 WhatsApp</a>
+      <a href="${maps}" target="_blank" rel="noopener" class="btn-ghost py-3 rounded-xl text-sm font-bold text-center">🗺️ Ruta</a>
+    </div>
+    <div class="mt-4 rounded-2xl border border-price/25 bg-price/[0.05] p-4 flex items-center justify-between gap-3">
+      <span class="text-[11px] uppercase tracking-widest text-slate-400">Cijena sa sajta</span><span class="font-display text-3xl font-bold text-price tabular">${money(l.total)}</span>
+    </div>
+    ${d.note ? `<div class="mt-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5 text-sm text-amber-200">${esc(d.note)}</div>` : ''}
+    <dl class="mt-5 space-y-3 text-sm break-words">
+      <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Odakle</dt><dd class="text-white">${esc(l.from || '—')}</dd><dd class="text-xs text-slate-400">${esc((d.pickup || {}).floor || '')}</dd></div>
+      <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Dokle</dt><dd class="text-white">${esc(l.to || '—')}</dd><dd class="text-xs text-slate-400">${esc((d.dropoff || {}).floor || '')}</dd></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Usluga</dt><dd>${esc(d.service || '—')}</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Prostor</dt><dd>${esc([d.home, l.sqm ? l.sqm + ' m²' : ''].filter(Boolean).join(' · ') || '—')}</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Tovar</dt><dd>${nf.format(l.m3 || 0)} m³ · ${esc(d.truck || '')}${d.trips > 1 ? ' · ' + esc(d.trips) + ' ture' : ''}</dd></div>
+        <div><dt class="text-[11px] uppercase tracking-widest text-slate-500">Udaljenost</dt><dd>${nf.format(l.km || 0)} km</dd></div>
+        <div class="col-span-2"><dt class="text-[11px] uppercase tracking-widest text-slate-500">Pakovanje</dt><dd>${esc(d.packing || '—')}</dd></div>
+      </div>
+    </dl>
+    ${inv ? `<h3 class="mt-6 text-xs font-extrabold tracking-[.2em] uppercase text-slate-500">Inventar</h3><table class="mt-2 w-full text-sm"><tbody>${inv}</tbody></table>` : ''}
+    ${calc ? `<h3 class="mt-6 text-xs font-extrabold tracking-[.2em] uppercase text-slate-500">Obračun cijene</h3><div class="mt-2 text-sm">${calc}</div>` : ''}
+    <div class="mt-8 pt-5 border-t border-white/[0.06] flex justify-end"><button id="delBtn" class="px-4 py-2.5 rounded-xl text-sm font-bold text-rose-300 border border-rose-400/30 hover:bg-rose-500/10">Obriši zahtjev</button></div>`;
+  $('#backBtn').addEventListener('click', closeDetail);
+  $('#stSel').addEventListener('change', e => { l.status = e.target.value; persist(); refresh(); toast('Status: ' + l.status); });
+  $('#delBtn').addEventListener('click', () => {
+    if (!confirm('Obrisati ovaj zahtjev?')) return;
+    leads = leads.filter(x => x.id !== l.id); persist(); closeDetail(); toast('Zahtjev je obrisan');
+  });
+  scrollTopApp();
+  refresh();
+}
+function closeDetail() { selected = null; $('#detailView').hidden = true; $('#listView').hidden = false; refresh(); scrollTopApp(); }
+function scrollTopApp() { const p = $('#phone'); if (p.scrollHeight > p.clientHeight) p.scrollTop = 0; else window.scrollTo(0, 0); }
+$('#filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; renderFilters(); renderList(); });
+$('#search').addEventListener('input', () => renderList());
+$('#leadList').addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) openDetail(b.dataset.id); });
+$('#resetDemo').addEventListener('click', () => {
+  if (!confirm('Resetovati demo? Brišu se probni zahtjevi i vraćaju početne cijene.')) return;
+  [KEYS.leads, KEYS.rules, KEYS.seeded, KEYS.seen].forEach(k => localStorage.removeItem(k));
+  seen.clear(); seed(); load(); rules = clone(DEFAULT_RULES); renderPrices(); closeDetail(); toast('Demo je resetovan');
+});
+let audio = null;
+function beep() {
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    [0, .18].forEach((t, i) => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.frequency.value = i ? 1046 : 784; o.connect(g); g.connect(audio.destination);
+      g.gain.setValueAtTime(.0001, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(.25, audio.currentTime + t + .02); g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + t + .25);
+      o.start(audio.currentTime + t); o.stop(audio.currentTime + t + .3);
+    });
+  } catch (e) { }
+}
+function onNewLead() {
+  const before = new Set(leads.map(l => l.id));
+  load();
+  const fresh = leads.find(l => !before.has(l.id));
+  if (!fresh) { refresh(); return; }
+  beep();
+  toast('Novi zahtjev: ' + (fresh.name || '') + ' · ' + money(fresh.total));
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification('Novi zahtjev za selidbu', { body: `${fresh.name || ''} · ${money(fresh.total)}`, icon: '/assets/ikona-192.png' }); } catch (e) { }
+  }
+  if (!selected) { filter = 'all'; refresh(fresh.id); } else refresh();
+}
+try { const bc = new BroadcastChannel('sb-demo'); bc.onmessage = ev => { if (ev.data && ev.data.type === 'lead') onNewLead(); }; } catch (e) { }
+window.addEventListener('storage', ev => { if (ev.key === KEYS.leads) onNewLead(); });
+$('#notifyBtn').addEventListener('click', async () => {
+  beep();
+  if ('Notification' in window) { const p = await Notification.requestPermission(); toast(p === 'granted' ? 'Zvuk i obavještenja su uključeni' : 'Zvuk je uključen'); }
+  else toast('Zvuk je uključen');
+});
+function mergeRules(src) {
+  const r = clone(DEFAULT_RULES);
+  if (!src || typeof src !== 'object') return r;
+  Object.keys(r).forEach(k => {
+    const v = src[k]; if (v == null) return;
+    if (Array.isArray(r[k])) { if (Array.isArray(v) && v.length === r[k].length) r[k] = v.map(Number); }
+    else if (typeof r[k] === 'object') Object.keys(r[k]).forEach(s => { if (Array.isArray(v[s]) && v[s].length === 2) r[k][s] = v[s].map(Number); });
+    else if (Number.isFinite(Number(v))) r[k] = Number(v);
+  });
+  return r;
+}
+const inp = (path, val) => `<input class="num" type="number" min="0" step="any" inputmode="decimal" data-path="${path}" value="${val}">`;
+const card = (title, inner, note) => `<section class="glass !rounded-2xl p-4"><h3 class="font-display text-lg font-bold text-white">${title}</h3>${note ? `<p class="text-xs text-slate-500 mt-1">${note}</p>` : ''}<div class="mt-3">${inner}</div></section>`;
+function renderPrices() {
+  let html = GROUPS.map(g => card(g.t, `<div class="space-y-3">${g.f.map(([k, l, u]) => `<label class="flex items-center gap-3"><span class="flex-1 text-sm text-slate-300">${l} <span class="text-slate-600 text-xs">(${u})</span></span><span class="w-24 shrink-0">${inp(k, rules[k])}</span></label>`).join('')}</div>`)).join('');
+  const floorRow = (k, t) => `<div class="text-xs text-slate-400 mt-2 mb-1">${t}</div><div class="grid grid-cols-7 gap-1">${rules[k].map((v, i) => `<label class="text-center"><span class="block text-[10px] text-slate-500 mb-0.5">${FLOOR_NAMES[i]}</span>${inp(k + '.' + i, v)}</label>`).join('')}</div>`;
+  html += card('Spratovi (%)', floorRow('sprat_bez_lifta', 'Bez lifta') + floorRow('sprat_sa_liftom', 'Sa liftom'), 'Procenat koji se dodaje na cijelu selidbu, posebno za utovar i istovar.');
+  html += card('Teški tereti', `<div class="grid grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] gap-2 items-center"><span></span><span class="text-[10px] text-slate-500 font-bold">Osnovno €</span><span class="text-[10px] text-slate-500 font-bold">Po spratu €</span>${Object.keys(rules.teski).map(k => `<span class="text-sm text-slate-300">${HEAVY_NAMES[k] || k}</span>${inp('teski.' + k + '.0', rules.teski[k][0])}${inp('teski.' + k + '.1', rules.teski[k][1])}`).join('')}</div>`);
+  html += card('Montaža i demontaža (po komadu)', `<div class="grid grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] gap-2 items-center"><span></span><span class="text-[10px] text-slate-500 font-bold">Montaža</span><span class="text-[10px] text-slate-500 font-bold">Demontaža</span>${Object.keys(rules.montaza).map(k => `<span class="text-sm text-slate-300">${MD_NAMES[k] || k}</span>${inp('montaza.' + k + '.0', rules.montaza[k][0])}${inp('montaza.' + k + '.1', rules.montaza[k][1])}`).join('')}</div>`);
+  $('#priceForm').innerHTML = html;
+}
+function readForm() {
+  const r = clone(rules);
+  for (const el of $$('#priceForm [data-path]')) {
+    const v = Number(el.value);
+    if (el.value === '' || !Number.isFinite(v) || v < 0) { el.focus(); throw new Error('Unesite ispravan broj.'); }
+    const p = el.dataset.path.split('.'); let o = r;
+    for (let i = 0; i < p.length - 1; i++) o = o[p[i]];
+    o[p[p.length - 1]] = v;
+  }
+  if (r.zaokruzi < 1) r.zaokruzi = 1;
+  return r;
+}
+$('#priceForm').addEventListener('input', e => { if (e.target.dataset.path) e.target.classList.add('changed'); });
+$('#savePrices').addEventListener('click', () => {
+  let r; try { r = readForm(); } catch (e) { toast(e.message); return; }
+  write(KEYS.rules, r); rules = r; renderPrices();
+  toast('Sačuvano – sajt sada koristi ove cijene');
+});
+$('#resetPrices').addEventListener('click', () => { rules = clone(DEFAULT_RULES); renderPrices(); $$('#priceForm .num').forEach(x => x.classList.add('changed')); toast('Učitane početne cijene – dodirnite Sačuvaj'); });
+$$('.tab-btn[data-tab]').forEach(b => b.addEventListener('click', () => {
+  $$('.tab-btn[data-tab]').forEach(x => x.classList.toggle('active', x === b));
+  $('#tab-leads').hidden = b.dataset.tab !== 'leads';
+  $('#tab-prices').hidden = b.dataset.tab !== 'prices';
+  scrollTopApp();
+}));
+seed();
+load();
+rules = mergeRules(read(KEYS.rules, null));
+renderPrices();
+refresh();
+})();
+</script>
+</body>
+</html>
